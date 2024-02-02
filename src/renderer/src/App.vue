@@ -1,26 +1,27 @@
 <script setup lang="ts">
 import Versions from './components/Versions.vue'
+import { compact } from 'lodash'
+import { ref } from 'vue'
 
 const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+
+const apps = ref([])
+
+const getApps = () => window.electron.ipcRenderer.invoke('get_apps')
+
+getApps().then((items) => {
+  apps.value = compact(items)
+})
 </script>
 
 <template>
-  <img alt="logo" class="logo" src="./assets/electron.svg" />
-  <div class="creator">Powered by electron-vite</div>
-  <div class="text">
-    Build an Electron app with
-    <span class="vue">Vue</span>
-    and
-    <span class="ts">TypeScript</span>
-  </div>
-  <p class="tip">Please try pressing <code>F12</code> to open the devTool</p>
-  <div class="actions">
-    <div class="action">
-      <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
-    </div>
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
+  <div class="flex flex-wrap">
+    <div
+      v-for="app in apps"
+      class="flex items-center justify-center flex-col w-30 h-30"
+    >
+      <img :src="app.icon" class="w-14 h-14" salt="" />
+      <div class="text-white text-center text-xs">{{ app.name }}</div>
     </div>
   </div>
-  <Versions />
 </template>
