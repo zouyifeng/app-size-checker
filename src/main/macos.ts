@@ -23,12 +23,14 @@ export class MacosAdapter extends Adapter {
     const icon = await this.readIcnsAsImageUri(
       path.join(p, 'Contents/Resources', info.CFBundleIconFile)
     )
+    console.log(' path.resolve(p): ',  path.resolve(p));
 
     return {
       id: info.CFBundleIdentifier,
       name: info.CFBundleName,
       icon,
       exePath: path.resolve(p, 'Contents/MacOS', info.CFBundleExecutable),
+      basePath: path.resolve(p)
     }
   }
 

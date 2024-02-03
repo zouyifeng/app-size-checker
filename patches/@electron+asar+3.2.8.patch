@@ -1,0 +1,14 @@
+diff --git a/node_modules/@electron/asar/lib/disk.js b/node_modules/@electron/asar/lib/disk.js
+index ad06182..603776e 100644
+--- a/node_modules/@electron/asar/lib/disk.js
++++ b/node_modules/@electron/asar/lib/disk.js
+@@ -107,7 +107,8 @@ module.exports.readFileSync = function (filesystem, filename, info) {
+   if (info.size <= 0) { return buffer }
+   if (info.unpacked) {
+     // it's an unpacked file, copy it.
+-    buffer = fs.readFileSync(path.join(`${filesystem.src}.unpacked`, filename))
++    // buffer = fs.readFileSync(path.join(`${filesystem.src}.unpacked`, filename))
++    // console.log(`readFileSync error `, path.join(`${filesystem.src}.unpacked`, filename))
+   } else {
+     // Node throws an exception when reading 0 bytes into a 0-size buffer,
+     // so we short-circuit the read in this case.

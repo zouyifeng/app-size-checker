@@ -15,6 +15,7 @@ export interface AppInfo {
   icon: string
   exePath: string
   hidden?: boolean
+  basePath: string
 }
 
 export interface SessionInfo {

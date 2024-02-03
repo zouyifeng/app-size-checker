@@ -4,9 +4,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: overlay;
   background-image: url('./wavy-lines.svg');
   background-size: cover;
-  user-select: none;
+  /* user-select: none; */
+  padding: 20px;
 }
 
