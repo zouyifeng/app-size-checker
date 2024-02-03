@@ -23,7 +23,7 @@ console.log(app.getPath('temp'))
 // const dllPath1 = 'C:\\Users\\kingsoft\\AppData\\Local\\Programs\\xiezuo'
 // const dllPath2 = 'C:\\Users\\kingsoft\\AppData\\Local\\Programs\\WOA'
 
-async function gen(p) {
+async function gen(p, filterDir = false) {
   const getFolderSize = (await import("get-folder-size")).default;
 
   const map =new Map()
@@ -32,7 +32,10 @@ async function gen(p) {
   let dirs = files.map(item => {
     return path.join(p, item)
   })
-  
+
+  if (filterDir)
+    dirs = dirs.filter(dir => !fs.lstatSync(dir).isDirectory())
+
   const ps = dirs.map(dir => getFolderSize(dir))
 
   const pss = await Promise.all(ps)
@@ -72,9 +75,9 @@ export const compareAsArUnpacked = async(path1: string, path2: string) => {
   return compare(path11, path22)
 }
 
-export const compare = async (path1: string, path2: string) => {
+export const compare = async (path1: string, path2: string, filterDir: boolean = false) => {
 
-  return await Promise.all([gen(path1), gen(path2)]).then(([a, b]) => {
+  return await Promise.all([gen(path1, filterDir), gen(path2, filterDir)]).then(([a, b]) => {
     // console.log(a.pkgs)
     // console.log(b.pkgs)
   
@@ -135,7 +138,7 @@ export const compare = async (path1: string, path2: string) => {
     const r6 = desc.map(item=> item.text).join('\n')
     // console.log("=== common end")
     
-    return { result: r1 + '\n' + r2 + '\n' + r3 + '\n' + r4 + '\n' + r5 + '\n' + r6 }
+    return { result: r6 + '\n' + r1 + '\n' + r2 + '\n' + r3 + '\n' + r4 + '\n' + r5 + '\n' + r6 }
   })
 }
 // console.log('包总数 ', result1.pkgs.length, resultA.pkgs.length)

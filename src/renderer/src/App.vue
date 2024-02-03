@@ -11,6 +11,7 @@ const getApps = () => window.electron.ipcRenderer.invoke('get_apps')
 
 const r1: Ref<{ result: string }> = ref({ result: '' })
 const r2: Ref<{ result: string }> = ref({ result: '' })
+const r3: Ref<{ result: string }> = ref({ result: '' })
 
 const compare = () => {
   if (selectApps.value.length === 2) {
@@ -20,7 +21,6 @@ const compare = () => {
   }
 }
 
-
 const compareAsar = () => {
   if (selectApps.value.length === 2) {
     window.electron.ipcRenderer.invoke('compare_asar', selectApps.value.map(app => app.basePath)).then(res => {
@@ -29,6 +29,14 @@ const compareAsar = () => {
   }
 }
 
+const compareDLL = () => {
+  console.log('select apps ', selectApps.value)
+  if (selectApps.value.length === 2) {
+    window.electron.ipcRenderer.invoke('compare_dll', selectApps.value.map(app => app.basePath)).then(res => {
+      r3.value = res
+    })
+  }
+}
 
 getApps().then((items) => {
   apps.value = compact(items)
@@ -72,5 +80,9 @@ const selectApp = (app) => {
   <div class="font-bold mt-10">COMPARE APP.ASAR</div>
   <div class="p-1 rounded mt-2 radius-1 w-20 text-center cursor-pointer bg-slate-700"  @click="compareAsar">compare</div>
   <pre class="max-h-64 overflow-y-auto">{{ r2.result }}</pre>
+
+  <div class="font-bold mt-10">COMPARE DLL</div>
+  <div class="p-1 rounded mt-2 radius-1 w-20 text-center cursor-pointer bg-slate-700"  @click="compareDLL">compare</div>
+  <pre class="max-h-64 overflow-y-auto">{{ r3.result }}</pre>
 
 </template>

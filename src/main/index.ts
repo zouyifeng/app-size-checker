@@ -3,7 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { MacosAdapter } from './macos'
-import { compareAsArUnpacked, compareAsar } from './compare'
+import { compare, compareAsArUnpacked, compareAsar } from './compare'
+import { WinAdapter } from './win'
 
 function createWindow(): void {
   // Create the browser window.
@@ -55,8 +56,16 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   ipcMain.handle('get_apps', () => {
-    const tool = new MacosAdapter()
-    return tool.readApps()
+    console.log('process.platform ', process.platform)
+    if (process.platform === 'darwin') {
+      const tool = new MacosAdapter()
+      return tool.readApps()
+    }
+    if (process.platform === 'win32') {
+      const tool = new WinAdapter()
+      return tool.readApps()
+    }
+    return []
   })
 
   ipcMain.handle('compare', (_, args) => {
@@ -65,6 +74,12 @@ app.whenReady().then(() => {
 
   ipcMain.handle('compare_asar', (_, args) => {
     return compareAsar(args[0], args[1])
+  })
+
+
+  ipcMain.handle('compare_dll', (_, args) => {
+    console.error(args[0], args[1])
+    return compare(args[0], args[1], true)
   })
 
   createWindow()
