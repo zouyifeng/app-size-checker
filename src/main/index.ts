@@ -3,14 +3,16 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { MacosAdapter } from './macos'
-import { compare, compareAsArUnpacked, compareAsar } from './compare'
+import { compare, compareAsArUnpacked, compareAsar, compare_pkgs_asar, compare_pkgs_asar_unpacked, extractPkgs } from './compare'
 import { WinAdapter } from './win'
+import log from 'electron-log/main';
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: '协作安装包大小分析工具',
     width: 900,
-    height: 670,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -56,7 +58,7 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   ipcMain.handle('get_apps', () => {
-    console.log('process.platform ', process.platform)
+    // console.log('process.platform ', process.platform)
     if (process.platform === 'darwin') {
       const tool = new MacosAdapter()
       return tool.readApps()
@@ -80,6 +82,24 @@ app.whenReady().then(() => {
   ipcMain.handle('compare_dll', (_, args) => {
     console.error(args[0], args[1])
     return compare(args[0], args[1], true)
+  })
+
+
+  ipcMain.handle('extract_pkgs', (_, args) => {
+    try {
+      return extractPkgs(args[0], args[1])
+    } catch(e) {
+      log.error('extract_pkgs ', e)
+      return '解压失败'
+    }
+  })
+
+  ipcMain.handle('compare_pkgs_asar', (_, args) => {
+    return compare_pkgs_asar(args)
+  })
+
+  ipcMain.handle('compare_pkgs_asar_unpacked', (_, args) => {
+    return compare_pkgs_asar_unpacked(args)
   })
 
   createWindow()

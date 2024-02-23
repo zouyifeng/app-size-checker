@@ -6,3 +6,8 @@ export interface AppInfo {
   hidden?: boolean
   basePath: string
 }
+
+export interface Pkg {
+  path: string,
+  size: number
+}

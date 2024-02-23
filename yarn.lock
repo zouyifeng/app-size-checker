@@ -747,6 +747,11 @@
   resolved "https://registry.npm.wps.cn/@types/semver/download/@types/semver-7.5.6.tgz#c65b2bfce1bec346582c07724e3f8c1017a20339"
   integrity sha1-xlsr/OG+w0ZYLAdyTj+MEBeiAzk=
 
+"@types/toastify-js@^1.12.3":
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/@types/toastify-js/-/toastify-js-1.12.3.tgz#a9f696401aba3f79ba9e5540849cc69a99e69b77"
+  integrity sha512-9RjLlbAHMSaae/KZNHGv19VG4gcLIm3YjvacCXBtfMfYn26h76YP5oxXI8k26q4iKXCB9LNfv18lsoS0JnFPTg==
+
 "@types/verror@^1.10.3":
   version "1.10.9"
   resolved "https://registry.npm.wps.cn/@types/verror/download/@types/verror-1.10.9.tgz#420c32adb9a2dd50b3db4c8f96501e05a0e72941"
@@ -1711,6 +1716,11 @@ dmg-license@^1.0.11:
     smart-buffer "^4.0.2"
     verror "^1.10.0"
 
+dmg@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npm.wps.cn/dmg/download/dmg-0.1.0.tgz#b38ea2107f6f0b070442bbf799bfc4f2aedaa5f8"
+  integrity sha1-s46iEH9vCwcEQrv3mb/E8q7apfg=
+
 doctrine@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.wps.cn/doctrine/download/doctrine-3.0.0.tgz#addebead72a6574db783639dc87a121773973961"
@@ -1756,6 +1766,11 @@ electron-builder@^24.9.1:
     read-config-file "6.3.2"
     simple-update-notifier "2.0.0"
     yargs "^17.6.2"
+
+electron-log@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-5.1.1.tgz#3341c0265339c6c8285a91840cb7c872008103d6"
+  integrity sha512-If7HU4Slbh2xfjOXOLxifkbgu6HmWDNJyXPLW+XNTOHMfFKisg0trA3d/7syyu25S+lHosfsd0VMfDSjGn1+Pw==
 
 electron-publish@24.8.1:
   version "24.8.1"
@@ -2017,6 +2032,18 @@ expand-template@^2.0.3:
   resolved "https://registry.npmjs.org/expand-template/-/expand-template-2.0.3.tgz#6e14b3fcee0f3a6340ecb57d2e8918692052a47c"
   integrity sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==
 
+extract-dmg@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.wps.cn/extract-dmg/download/extract-dmg-1.0.0.tgz#4c153ee5be8816bfe32518a953eadadb61c36282"
+  integrity sha1-TBU+5b6IFr/jJRipU+ra22HDYoI=
+  dependencies:
+    dmg "^0.1.0"
+    file-ext "^1.0.0"
+    fs-extra "^8.1.0"
+    get-ext "^1.0.2"
+    ow "^0.16.0"
+    pify "^5.0.0"
+
 extract-zip@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.wps.cn/extract-zip/download/extract-zip-2.0.1.tgz#663dca56fe46df890d5f131ef4a06d22bb8ba13a"
@@ -2084,6 +2111,14 @@ file-entry-cache@^6.0.1:
   integrity sha1-IRst2WWcsDlLBz5zI6w8kz1SICc=
   dependencies:
     flat-cache "^3.0.4"
+
+file-ext@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.wps.cn/file-ext/download/file-ext-1.0.0.tgz#2125fa6e27fd92154a5448b091fcddaf00916a5e"
+  integrity sha1-ISX6bif9khVKVEiwkfzdrwCRal4=
+  dependencies:
+    get-ext "^1.0.2"
+    ow "^0.16.0"
 
 filelist@^1.0.4:
   version "1.0.4"
@@ -2233,6 +2268,11 @@ get-caller-file@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npm.wps.cn/get-caller-file/download/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha1-T5RBKoLbMvNuOwuXQfipf+sDH34=
+
+get-ext@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npm.wps.cn/get-ext/download/get-ext-1.0.2.tgz#fce896d0cc4cd615ece7c13a0ebd55e65270056d"
+  integrity sha1-/OiW0MxM1hXs58E6Dr1V5lJwBW0=
 
 get-folder-size@^4.0.0:
   version "4.0.0"
@@ -3061,6 +3101,13 @@ os-tmpdir@~1.0.2:
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
   integrity sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==
 
+ow@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.npm.wps.cn/ow/download/ow-0.16.0.tgz#c096cfbee8fe447577099598e8f04e002f2fc391"
+  integrity sha1-wJbPvuj+RHV3CZWY6PBOAC8vw5E=
+  dependencies:
+    type-fest "^0.8.1"
+
 p-cancelable@^2.0.0:
   version "2.1.1"
   resolved "https://registry.npm.wps.cn/p-cancelable/download/p-cancelable-2.1.1.tgz#aab7fbd416582fa32a3db49859c122487c5ed2cf"
@@ -3165,6 +3212,11 @@ pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npm.wps.cn/pify/download/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
   integrity sha1-7RQaasBDqEnqWISY59yosVMw6Qw=
+
+pify@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npm.wps.cn/pify/download/pify-5.0.0.tgz#1f5eca3f5e87ebec28cc6d54a0e4aaf00acc127f"
+  integrity sha1-H17KP16H6+wozG1UoOSq8ArMEn8=
 
 pirates@^4.0.1:
   version "4.0.6"
@@ -3900,6 +3952,11 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
+toastify-js@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/toastify-js/-/toastify-js-1.12.0.tgz#cc1c4f5c7e7380e854e20bedceb51980ea29f64d"
+  integrity sha512-HeMHCO9yLPvP9k0apGSdPUWrUbLnxUKNFzgUoZp1PHCLploIX/4DSQ7V8H25ef+h4iO9n0he7ImfcndnN6nDrQ==
+
 truncate-utf8-bytes@^1.0.0:
   version "1.0.2"
   resolved "https://registry.npm.wps.cn/truncate-utf8-bytes/download/truncate-utf8-bytes-1.0.2.tgz#405923909592d56f78a5818434b0b78489ca5f2b"
@@ -3945,6 +4002,11 @@ type-fest@^0.20.2:
   version "0.20.2"
   resolved "https://registry.npm.wps.cn/type-fest/download/type-fest-0.20.2.tgz#1bf207f4b28f91583666cb5fbd327887301cd5f4"
   integrity sha1-G/IH9LKPkVg2ZstfvTJ4hzAc1fQ=
+
+type-fest@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.npm.wps.cn/type-fest/download/type-fest-0.8.1.tgz#09e249ebde851d3b1e48d27c105444667f17b83d"
+  integrity sha1-CeJJ696FHTseSNJ8EFREZn8XuD0=
 
 typescript@^5.3.3:
   version "5.3.3"

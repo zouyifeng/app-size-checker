@@ -1,12 +1,21 @@
-import fs from 'fs'
-import path from 'path'
+import * as fs from 'fs'
+import * as path from 'path'
 import _ from 'lodash'
 
 import { app } from 'electron'
-import asar from '@electron/asar'
+import * as asar from '@electron/asar'
+import { spawn } from 'child_process'
+import log from 'electron-log/main';
 
-console.log(app.getPath('temp'))
 
+log.info(path.join(app.getAppPath(), '..', '/app/script/test.js'))
+log.info(app.getAppPath())
+
+let scriptPath = path.join(app.getAppPath(), '..', '/app/script/test.js')
+
+if (!app.isPackaged) {
+  scriptPath = 'script/test.js'
+}
 
 // const path1 = './dist1/app.asar.unpacked/node_modules'
 // const pathA = './dist2/app.asar.unpacked/node_modules'
@@ -73,6 +82,12 @@ export const compareAsArUnpacked = async(path1: string, path2: string) => {
   const path22 = path.join(path2, '/Contents/Resources/app.asar.unpacked/node_modules')
 
   return compare(path11, path22)
+}
+
+const sleep = (ms: number) => {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms)
+  })
 }
 
 export const compare = async (path1: string, path2: string, filterDir: boolean = false) => {
@@ -144,3 +159,72 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
 // console.log('包总数 ', result1.pkgs.length, resultA.pkgs.length)
 
 
+export const extractPkgs = async (path1: string, path2: string) => {
+  try {
+    const job1: Promise<string> = new Promise((resolve, reject) => {
+      const childProcess = spawn('/usr/local/bin/node', [scriptPath, path1, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
+      childProcess.stdout.on('data', (data) => {  
+        resolve(data.toString().replaceAll('\n', ''))
+      });
+      childProcess.stderr.on('data', (data) => {  
+        reject(data.toString())
+        log.error(data.toString())
+      });  
+    })
+
+    await sleep(500)
+
+    const job2: Promise<string> = new Promise((resolve, reject) => {
+      const childProcess1 = spawn('/usr/local/bin/node', [scriptPath, path2, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
+      childProcess1.stdout.on('data', (data) => {  
+        resolve(data.toString().replaceAll('\n', ''))
+      });
+      childProcess1.stderr.on('data', (data) => {  
+        reject(data.toString())
+        log.error(data.toString())
+      });
+    })
+
+    const result = await Promise.all([job1, job2])
+    // const [p1, p2] = result
+    console.log('result: ', result);
+    // const r1 = await compareAsar(p1, p2)
+    // const r2 = await compareAsArUnpacked(path1, path2)
+
+    return result
+  } catch(e) {
+    console.error(e)
+    return '操作失败'
+  }
+}
+
+export const compare_pkgs_asar = async (paths: string[]) => {
+  try {
+    const [path1, path2] = paths
+    const r1 = await compareAsar(path1, path2)
+    return r1
+  } catch(e) {
+    return '操作失败'
+  }
+}
+
+export const compare_pkgs_asar_unpacked = async (paths: string[]) => {
+  try {
+    const [path1, path2] = paths
+    const r1 = await compareAsArUnpacked(path1, path2)
+    return r1
+  } catch(e) {
+    return '操作失败'
+  }
+}
+
+// export const extractPkg = async (pkgPath: string) => {
+//   console.log('path: ', pkgPath);
+//   const extractDmg = require("extract-dmg");
+//   // const tempPath = app.getPath('temp')
+//   // const target = path.resolve(tempPath, Date.now().toString())
+//   // const target1 = path.resolve(__dirname, Date.now().toString())
+//   // console.log('tempPath: ', tempPath);
+//   const r = await extractDmg(pkgPath, '/Users/zouyifeng/Documents/Project/myself/practice-electron/dmg-extract/extractDir')
+//   console.log('r: ', r);
+// }
