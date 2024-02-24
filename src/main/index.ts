@@ -80,7 +80,7 @@ app.whenReady().then(() => {
 
 
   ipcMain.handle('compare_dll', (_, args) => {
-    console.error(args[0], args[1])
+    // console.error(args[0], args[1])
     return compare(args[0], args[1], true)
   })
 

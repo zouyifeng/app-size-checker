@@ -16,7 +16,7 @@ import { readdirSafe } from './utils'
 
 export class WinAdapter extends Adapter {
   async readApps() {
-    console.error('read apps  ')
+    // console.error('read apps  ')
 
     const items = [
       ...this.enumRegeditItems(
@@ -33,7 +33,7 @@ export class WinAdapter extends Adapter {
       ),
     ]
 
-    console.error('items ', items)
+    // console.error('items ', items)
     return Promise.all(
       items.map((itemValues) =>
         this.getAppInfoFromRegeditItemValues(itemValues)

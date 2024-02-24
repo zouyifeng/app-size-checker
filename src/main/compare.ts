@@ -2,19 +2,21 @@ import * as fs from 'fs'
 import * as path from 'path'
 import _ from 'lodash'
 
+
 import { app } from 'electron'
 import * as asar from '@electron/asar'
-import { spawn } from 'child_process'
+import { spawn, exec } from 'child_process'
 import log from 'electron-log/main';
+const iconv = require('iconv-lite');
 
 
-log.info(path.join(app.getAppPath(), '..', '/app/script/test.js'))
 log.info(app.getAppPath())
 
-let scriptPath = path.join(app.getAppPath(), '..', '/app/script/test.js')
+const isMac = process.platform === 'darwin'
 
+let scriptPath = path.join(app.getAppPath(), '..', `/app/script/mac.js`)
 if (!app.isPackaged) {
-  scriptPath = 'script/test.js'
+  scriptPath = `script/mac.js`
 }
 
 // const path1 = './dist1/app.asar.unpacked/node_modules'
@@ -66,8 +68,8 @@ function fixed(a) {
 }
 
 export const compareAsar = async (path1: string, path2: string) => {
-  const path11 = path.join(path1, '/Contents/Resources/app.asar')
-  const path22 = path.join(path2, '/Contents/Resources/app.asar')
+  const path11 = path.join(path1, '/Resources/app.asar')
+  const path22 = path.join(path2, '/Resources/app.asar')
   const dist11 = path.join(app.getPath('temp'), 'check1')
   asar.extractAll(path11, dist11)
   const dist22 = path.join(app.getPath('temp'), 'check2')
@@ -78,8 +80,8 @@ export const compareAsar = async (path1: string, path2: string) => {
 
 export const compareAsArUnpacked = async(path1: string, path2: string) => {
 
-  const path11 = path.join(path1, '/Contents/Resources/app.asar.unpacked/node_modules')
-  const path22 = path.join(path2, '/Contents/Resources/app.asar.unpacked/node_modules')
+  const path11 = path.join(path1, '/Resources/app.asar.unpacked/node_modules')
+  const path22 = path.join(path2, '/Resources/app.asar.unpacked/node_modules')
 
   return compare(path11, path22)
 }
@@ -106,8 +108,8 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
     // console.log(_.intersection(a.pkgs, b.pkgs))
   
     const common = _.intersection(a.pkgs, b.pkgs)
-    console.error('total: ', a.pkgs.length, b.pkgs.length)
-    console.error('common: ', common.length);
+    // console.error('total: ', a.pkgs.length, b.pkgs.length)
+    // console.error('common: ', common.length);
 
     const r2 = 'total  ' + a.pkgs.length + b.pkgs.length
     const r3 = 'common: ' + common.length
@@ -128,7 +130,7 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
       descDiffA.push({ text: pkg + ' size => ' + a.map.get(pkg)+'MB ', diff:  a.map.get(pkg) })
     })
     descDiffA.sort((a, b) =>  b.diff - a.diff)
-    descDiffA.length && descDiffA.forEach(item => console.log(item.text))
+    // descDiffA.length && descDiffA.forEach(item => console.log(item.text))
 
     const r4 = descDiffA.join('\n')
     // console.log(`==== ${path1}: end\n`);
@@ -140,7 +142,7 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
       descDiffB.push({ text: pkg + ' size => ' + b.map.get(pkg) + 'MB ', diff: b.map.get(pkg) })
     })
     descDiffB.sort((a, b) =>  b.diff - a.diff)
-    diffB.length && descDiffB.forEach(item => console.log(item.text))
+    // diffB.length && descDiffB.forEach(item => console.log(item.text))
     const r5 = descDiffB.join('\n')
     // console.log(`==== ${path2}: end\n`);
   
@@ -148,7 +150,7 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
     desc.sort((a, b) =>  b.diff - a.diff)
     
     // console.log("=== common start")
-    desc.forEach(item => console.log(item.text))
+    // desc.forEach(item => console.log(item.text))
 
     const r6 = desc.map(item=> item.text).join('\n')
     // console.log("=== common end")
@@ -160,42 +162,111 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
 
 
 export const extractPkgs = async (path1: string, path2: string) => {
-  try {
-    const job1: Promise<string> = new Promise((resolve, reject) => {
-      const childProcess = spawn('/usr/local/bin/node', [scriptPath, path1, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
-      childProcess.stdout.on('data', (data) => {  
-        resolve(data.toString().replaceAll('\n', ''))
-      });
-      childProcess.stderr.on('data', (data) => {  
-        reject(data.toString())
-        log.error(data.toString())
-      });  
-    })
 
-    await sleep(500)
+  console.log('isMac: ', isMac);
+  if(isMac) {
+    try {
+      const job1: Promise<string> = new Promise((resolve, reject) => {
+        const childProcess = spawn('/usr/local/bin/node', [scriptPath, path1, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
+        childProcess.stdout.on('data', (data) => {  
+          resolve(data.toString().replaceAll('\n', ''))
+        });
+        childProcess.stderr.on('data', (data) => {  
+          reject(data.toString())
+          log.error(data.toString())
+        });  
+      })
+  
+      await sleep(500)
+  
+      const job2: Promise<string> = new Promise((resolve, reject) => {
+        const childProcess1 = spawn('/usr/local/bin/node', [scriptPath, path2, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
+        childProcess1.stdout.on('data', (data) => {  
+          resolve(data.toString().replaceAll('\n', ''))
+        });
+        childProcess1.stderr.on('data', (data) => {  
+          reject(data.toString())
+          log.error(data.toString())
+        });
+      })
+  
+      const result = await Promise.all([job1, job2])
+      // const [p1, p2] = result
+      // console.log('result: ', result);
+      // const r1 = await compareAsar(p1, p2)
+      // const r2 = await compareAsArUnpacked(path1, path2)
+  
+      return result
+    } catch(e) {
+      // console.error(e)
+      return '操作失败'
+    }
+  } else {
+    let zipExe = ''
+    if (app.isPackaged) {
+      zipExe = path.join(app.getAppPath(), '..', 'app\\script\\7z.exe')
+      log.info('zip exe path', zipExe)
+    } else {
+      zipExe = 'script\\7z.exe'
+    }
+    console.log('zipExe: ', zipExe);
+    try {
+      const p1 = new Promise((resolve) => {
+        const extractDir = path.join(path1, '..', _.random(0, 10000).toString())
+        console.log('extractDir: ', extractDir);
+        const appZipPath = path.join(extractDir, 'app.7z')
+        console.log('appZipPath: ', appZipPath);
+  
+        fs.mkdirSync(extractDir)
+  
+        const command1 = zipExe + ' x -y -o' + extractDir + ' ' + path1
+        console.log('command1: ', command1);
+        exec(command1, (err) => {
+          console.log('err1: ', err);
+          const command2 = zipExe + ' x -y -o' + extractDir + ' ' + appZipPath
+          console.log('command2: ', command2);
+          exec(command2,  (err) => {
+            console.log('err2: ', err);
+            resolve(extractDir)
+          })
+        })
+      })
 
-    const job2: Promise<string> = new Promise((resolve, reject) => {
-      const childProcess1 = spawn('/usr/local/bin/node', [scriptPath, path2, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
-      childProcess1.stdout.on('data', (data) => {  
-        resolve(data.toString().replaceAll('\n', ''))
-      });
-      childProcess1.stderr.on('data', (data) => {  
-        reject(data.toString())
-        log.error(data.toString())
-      });
-    })
+      await sleep(500)
 
-    const result = await Promise.all([job1, job2])
-    // const [p1, p2] = result
-    console.log('result: ', result);
-    // const r1 = await compareAsar(p1, p2)
-    // const r2 = await compareAsArUnpacked(path1, path2)
+      const p2 = new Promise((resolve) => {
+        const extractDir = path.join(path1, '..', _.random(0, 10000).toString())
+        console.log('extractDir: ', extractDir);
+        const appZipPath = path.join(extractDir, 'app.7z')
+        console.log('appZipPath: ', appZipPath);
+  
+        fs.mkdirSync(extractDir)
+  
+        const command1 = zipExe + ' x -y -o' + extractDir + ' ' + path2
+        console.log('command1: ', command1);
+        exec(command1, (err) => {
+          console.log('err1: ', err);
+          const command2 = zipExe + ' x -y -o' + extractDir + ' ' + appZipPath
+          console.log('command2: ', command2);
+          exec(command2,  (err) => {
+            console.log('err2: ', err);
+            resolve(extractDir)
+          })
+        })
+      })
 
-    return result
-  } catch(e) {
-    console.error(e)
-    return '操作失败'
+      const result = await Promise.all([p1, p2])
+      console.log('result: ', result);
+
+      return result
+    } catch(e) {
+      log.info('extractPkgs err ', iconv.decode(e, 'cp936'))
+      return e
+    }
   }
+
+
+
 }
 
 export const compare_pkgs_asar = async (paths: string[]) => {

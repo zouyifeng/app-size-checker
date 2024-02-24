@@ -82,6 +82,7 @@ const extractPkgs = () => {
       'extract_pkgs',
       selectPkgs.value.map((app) => app.path)
     ).then((res) => {
+      console.error(res)
       if (res && res.length === 2) {
         extractSuccess.value = true
         pkgsExtractPath.value = res
