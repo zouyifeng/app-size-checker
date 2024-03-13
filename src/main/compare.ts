@@ -70,9 +70,11 @@ function fixed(a) {
 export const compareAsar = async (path1: string, path2: string) => {
   const path11 = path.join(path1, '/Resources/app.asar')
   const path22 = path.join(path2, '/Resources/app.asar')
-  const dist11 = path.join(app.getPath('temp'), 'check1')
+  const dist11 = randomDist()
+  log.info('compareAsar dist 1 ', dist11 )
   asar.extractAll(path11, dist11)
-  const dist22 = path.join(app.getPath('temp'), 'check2')
+  const dist22 = randomDist()
+  log.info('compareAsar dist 2 ', dist22 )
   asar.extractAll(path22, dist22) 
 
   return compare(path.join(dist11, 'node_modules'), path.join(dist22, 'node_modules'))
@@ -160,6 +162,8 @@ export const compare = async (path1: string, path2: string, filterDir: boolean =
 }
 // console.log('包总数 ', result1.pkgs.length, resultA.pkgs.length)
 
+const random = () => _.random(0, 1000).toString()
+const randomDist = () => path.join(app.getPath('temp'), 'woa-size-' + random())
 
 export const extractPkgs = async (path1: string, path2: string) => {
 
@@ -167,7 +171,10 @@ export const extractPkgs = async (path1: string, path2: string) => {
   if(isMac) {
     try {
       const job1: Promise<string> = new Promise((resolve, reject) => {
-        const childProcess = spawn('/usr/local/bin/node', [scriptPath, path1, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
+        const dist = randomDist()
+        log.info('extractPkgs 1 ', dist)
+        fs.mkdirSync(dist)
+        const childProcess = spawn('/usr/local/bin/node', [scriptPath, path1, dist], { env: { PATH: process.env.PATH }, shell: true })
         childProcess.stdout.on('data', (data) => {  
           resolve(data.toString().replaceAll('\n', ''))
         });
@@ -180,7 +187,10 @@ export const extractPkgs = async (path1: string, path2: string) => {
       await sleep(500)
   
       const job2: Promise<string> = new Promise((resolve, reject) => {
-        const childProcess1 = spawn('/usr/local/bin/node', [scriptPath, path2, app.getPath('temp')], { env: { PATH: process.env.PATH }, shell: true })
+        const dist = randomDist()
+        log.info('extractPkgs 2 ', dist)
+        fs.mkdirSync(dist)
+        const childProcess1 = spawn('/usr/local/bin/node', [scriptPath, path2, dist], { env: { PATH: process.env.PATH }, shell: true })
         childProcess1.stdout.on('data', (data) => {  
           resolve(data.toString().replaceAll('\n', ''))
         });

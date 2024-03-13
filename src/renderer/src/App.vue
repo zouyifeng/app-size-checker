@@ -150,9 +150,14 @@ const comparePkgsAsarUnpacked = () => {
     }
   })
 }
+
+const openLog = () => {
+  invoke('open_log')
+}
 </script>
 
 <template>
+  <div class="text-gray-950 fixed top-0 right-0 text-sm" @click="openLog">打开日志</div>
   <div class="select-none">
     <div class="flex text-base text-white text-center mb-10 w-full">
       <div

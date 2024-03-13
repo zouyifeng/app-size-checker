@@ -102,6 +102,11 @@ app.whenReady().then(() => {
     return compare_pkgs_asar_unpacked(args)
   })
 
+  ipcMain.handle('open_log', () => {
+    const path = app.getPath('logs')
+    shell.openPath(path)
+  })
+
   createWindow()
 
   app.on('activate', function () {
