@@ -180,7 +180,7 @@ export const extractPkgs = async (path1: string, path2: string) => {
         });
         childProcess.stderr.on('data', (data) => {  
           reject(data.toString())
-          log.error(data.toString())
+          log.error(iconv.decode(data.toString(), 'cp936'))
         });  
       })
   
@@ -196,7 +196,7 @@ export const extractPkgs = async (path1: string, path2: string) => {
         });
         childProcess1.stderr.on('data', (data) => {  
           reject(data.toString())
-          log.error(data.toString())
+          log.error(iconv.decode(data.toString(), 'cp936'))
         });
       })
   
@@ -229,7 +229,7 @@ export const extractPkgs = async (path1: string, path2: string) => {
   
         fs.mkdirSync(extractDir)
   
-        const command1 = zipExe + ' x -y -o' + extractDir + ' ' + path1
+        const command1 = zipExe + ' x -y -o' + extractDir + ' ' + `"${path1}"`
         console.log('command1: ', command1);
         exec(command1, (err) => {
           console.log('err1: ', err);
@@ -252,7 +252,7 @@ export const extractPkgs = async (path1: string, path2: string) => {
   
         fs.mkdirSync(extractDir)
   
-        const command1 = zipExe + ' x -y -o' + extractDir + ' ' + path2
+        const command1 = zipExe + ' x -y -o' + extractDir + ' ' + `"${path2}"`
         console.log('command1: ', command1);
         exec(command1, (err) => {
           console.log('err1: ', err);
