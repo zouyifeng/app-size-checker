@@ -7,13 +7,18 @@ import { AppInfo, Pkg } from './types'
 import Toastify from 'toastify-js'
 import 'toastify-js/src/toastify.css'
 
+let t: any
+
 const toast = (text) => {
-  Toastify({
+  if (t) t.hideToast()
+  t = Toastify({
     text,
+    duration: -1,
     style: {
       background: 'linear-gradient(to right, #00b09b, #96c93d)'
     }
-  }).showToast()
+  })
+  t.showToast()
 }
 
 const invoke = window.electron.ipcRenderer.invoke
@@ -172,7 +177,7 @@ const openLog = () => {
         :class="{ underline: !compareFromApps }"
         @click="compareFromApps = false"
       >
-        从已有安装包对比
+        从已有安装包对比（beta）
       </div>
     </div>
     <!-- 从已有应用中对比 -->
